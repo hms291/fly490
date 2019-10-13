@@ -6,9 +6,36 @@ require_once('rabbitMQLib.inc');
 
 function doLogin($username,$password)
 {
-    // lookup username in databas
-    // check password
-    return true;
+    //Connect to Mysql
+    // "localhost","mysql_user","mysql_password","database_name"
+	$db = mysqli_connect("localhost","fly490base","basepassword","skyscanner");
+	$Query = "SELECT * FROM users WHERE username = '$username' AND password = '$password'";
+
+	$run = mysqli_query($db,$Query);
+		echo "Checking database for username and password";
+	// Return value of the query is $row
+	$row = mysqli_fetch_array($run) ;
+	while ( $row ){
+		if ($row['username'] == $username)
+			{
+			echo "$username is in the database \n".PHP_EOL;
+		
+			if ($row['password'] == $password){
+			  echo "Password matches\n".PHP_EOL;
+			  return 1;
+			}	
+			else{
+				echo "Password did NOT match\n".PHP_EOL;
+				return 0;
+			}
+		}
+		else {
+			echo "User $username Does not exist\n".PHP_EOL;
+			return 0;
+		}
+	}	
+    
+   // return true;
     //return false if not valid
 }
 
@@ -16,6 +43,7 @@ function requestProcessor($request)
 {
   echo "received request".PHP_EOL;
   var_dump($request);
+
   if(!isset($request['type']))
   {
     return "ERROR: unsupported message type";
