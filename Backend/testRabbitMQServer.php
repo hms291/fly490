@@ -39,6 +39,33 @@ function doLogin($username,$password)
 		}
 }
 
+function doRegister($username,$email,$password)
+{
+    //Connect to Mysql
+    // "localhost","mysql_user","mysql_password","database_name"
+        $db = mysqli_connect("localhost","fly490base","basepassword","skyscanner");
+        $Query_1 = "SELECT * FROM users WHERE username = '$username'";
+
+        $run = mysqli_query($db,$Query_1);
+                echo "Checking database for username and password".PHP_EOL;
+
+	// Check to see if theres a existing row for this user
+	$lines = mysqli_num_rows($run);
+	// If there is a line, say user exists, otherwise let them make a account
+	if ($lines > 0 )
+	{
+		echo "Username already exists\n".PHP_EOL;
+		return 0;
+	}
+	else
+	{
+		$insert = "INSERT INTO users (username,password) VALUES('$username','$password') ";
+		$doinsert = mysqli_query($db,$insert) or die ;
+		echo "Username: $username created!\n".PHP_EOL;
+		return 1;
+	}
+}
+
 function requestProcessor($request)
 {
   echo "received request".PHP_EOL;
@@ -52,6 +79,8 @@ function requestProcessor($request)
   {
     case "login":
       return doLogin($request['username'],$request['password']);
+    case "register":
+      return doRegister($request['username'],$request['email'],$request['password']);
     case "validate_session":
       return doValidate($request['sessionId']);
   }
