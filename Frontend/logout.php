@@ -12,5 +12,5 @@
 	//setcookie("PHPSESSID", "", time()-3600, "~sp2235/download/Asst2-d/Asst2/", "", 0,0);
   	echo "<br><br>Session has ended...
         <br>You are being redirected... <br>" ;
-  	header ( "refresh: 3; url = ../index.php" );
+  	header ( "refresh: 3; url = ../index.html" );
 ?>
