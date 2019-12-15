@@ -1,0 +1,36 @@
+#!/bin/bash
+
+MACH=$1
+FILE=$2
+	#info for QA machine
+	if  [ $MACH == 'FE' ]
+        then
+                #10.0.2.16 is a QA FrontEnd machine
+        	IP_D="192.168.1.41"
+        	USER_M="ali"
+       		PASS_M="password"
+	else
+		#10.0.2.17 is a QA BackEnd machine
+		IP_D="192.168.1.42"
+                USER_M="ali"
+                PASS_M="password"
+	fi
+
+# password for QA root
+pAs="password"
+
+# Delete old pkg files from ~/QA/Files 
+# Delete files from /var/www/Backup/
+# mv files from /var/www/newsme to /var/www/Backup/
+
+/usr/bin/sshpass -p ${PASS_M} ssh -t "${USER_M}"@"${IP_D}" "cd /home/${USER_M}/QA/Files/; sudo rm *.zip; cd /var/www/fly490/; sudo cp -r ./* ../Backup/"
+
+# Send New package to ~/QA/Files/
+cd ~/Deploy/Deployment/Packages/
+ sshpass -p "${PASS_M}" scp ${FILE} "${USER_M}"@"${IP_D}":~/QA/Files/
+
+# Unzip and Host new pkg files to /var/www/DepTest/
+#/usr/bin/sshpass -p ${PASS_M} ssh -t "${USER_M}"@"${IP_D}" "sudo unzip /home/${USER_M}/QA/Files/${FILE} -d /var/www/fly490/"
+#echo "Ready to move From FE and back one..."
+# Unzip and Host new pkg files to /var/www/DepTest/
+#/usr/bin/sshpass -p ${PASS_M} ssh -t "${USER_M}"@"${IP_D}" "cd /var/www/fly490/FE/; sudo mv ./* .."
